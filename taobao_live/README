@@ -1,0 +1,21 @@
+淘宝直播
+########
+在线人数来源
+淘宝直播的在线人数在他的network中，其中json的链接形式如下
+http://api.m.taobao.com/h5/mtop.guide.video.livedetail/2.0/?
+    appKey=12574478&t=1473053498335&sign=ed6f691b5d914f1ddd14184418a0818b&
+    api=mtop.guide.video.liveDetail&v=2.0&type=jsonp&dataType=jsonp&timeout=20000&callback=mtopjsonp2&
+    data=%7B%22creatorId%22%3A%22786122260%22%7D
+
+淘宝直播的服务器通过检查requests携带的cookies 和url中sign的吻合度来判断请求是否合法。
+##########
+sign 的来源
+sign是整个url请求中最难得到的部分，通过观察源代码一段时间，发现他是运用了md5的加密方法，
+其中appkey为固定值，t为时间戳，data则记录了主播的userid 或者直播liveid。
+此外我们定义一个token，token是cookies中_m_h5_tk=035f1cf3afa2f5b5f56060643cf9fa4c_1473057062350这个参数的
+'_'前面的部分，即为035f1cf3afa2f5b5f56060643cf9fa4c
+简单地说
+sign=md5(token+t+appkey+data)
+
+##########
+每个一段时间会更换cookies的值，此时我用了Python的selenium库调用了本地的firefox。并将cookie和token分别存放与本地文件中。
